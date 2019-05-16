@@ -6,9 +6,9 @@ class DirManager:
     def __init__(self, dir_path):
         self.path, self.dir_list, self.file_name_list = list(os.walk(dir_path))[0]  # path，all_dirs，all_filename
 
-    def get_all_file_abspath(self):
-        return [[os.path.join(item[0], item[2][i]) for i in range(len(item[2]))] for item in
-                os.walk(self.path)]  # return all file abspath (all abs path in this path including subdirs)
+    def get_all_file_name(self):
+        return reduce(lambda x, y: x + y, [[item[2][i] for i in range(len(item[2]))] for item in
+                      os.walk(self.path)])  # return all file abspath (all abs path in this path including subdirs)
 
     def get_file_abspath(self):
         return [os.path.join(self.path, item) for item in
@@ -19,7 +19,7 @@ class DirManager:
         :param post_fix_set:{"jpg", "png", "json", "xml"}
         :return: [[], ['d:file_utils.xml'], ['d:.idea\\encodings.xml', 'd:.idea\\file_manager.png', 'd:.idea\\misc.xml']
         """
-        files = self.get_all_file_abspath()
+        files = self.get_all_file_name()  # todo
         return [list(filter(lambda x: x.split(".")[-1] in post_fix_set, item)) for item in files]
 
     def all_file_filter(self, post_fix_set):
@@ -40,5 +40,8 @@ class DirManager:
         file_list = self.__filt_filter(post_fix_set)
         return reduce(lambda x, y: x + y, file_list)
 
+
 if __name__ == '__main__':
-    a = DirManager()
+    a = DirManager("D:\\test_dir")
+    print(a.get_file_abspath())
+    print(a.get_all_file_abspath())
